@@ -111,7 +111,7 @@ public class InferenceAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
     private final BytecodeTypeAnnotator bytecodeTypeAnnotator;
     private final AnnotationMirror realTop;
     private final AnnotationMirror varAnnot;
-    private final InferenceQualifierPolymorphism inferencePoly;
+    protected final InferenceQualifierPolymorphism inferencePoly;
     private final ConstantToVariableAnnotator constantToVariableAnnotator;
 
     public static final Logger logger = Logger.getLogger(InferenceAnnotatedTypeFactory.class.getSimpleName());
