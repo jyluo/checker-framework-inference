@@ -1,7 +1,9 @@
 package checkers.inference.solver.util;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.HashSet;
@@ -9,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.lang.model.element.AnnotationMirror;
-
+import org.checkerframework.framework.type.AnnotatedTypeFactory;
 import checkers.inference.InferenceMain;
 import checkers.inference.model.ArithmeticConstraint;
 import checkers.inference.model.CombVariableSlot;
@@ -44,6 +46,8 @@ public class PrintUtils {
     public static void printSolutions(Map<Integer, AnnotationMirror> solutions) {
 
         final int maxLength = String.valueOf(InferenceMain.getInstance().getSlotManager().getNumberOfSlots()).length();
+        final AnnotatedTypeFactory atf = InferenceMain.getInstance().getRealTypeFactory();
+
         StringBuilder printBuffer = new StringBuilder();
 
         System.out.println("/***********************Results****************************/");
@@ -54,12 +58,29 @@ public class PrintUtils {
                 printBuffer.append(" ");
             }
             printBuffer.append("Annotation: ");
-            printBuffer.append(solutions.get(j).toString());
+            printBuffer.append(atf.getAnnotationFormatter().formatAnnotationMirror(solutions.get(j)));
             printBuffer.append("\n");
         }
-        System.out.println(printBuffer.toString());
+
+        String output = printBuffer.toString();
+        System.out.flush();
+        System.out.println(output);
         System.out.flush();
         System.out.println("/**********************************************************/");
+
+        // also write to file
+        String writePath = new File(new File("").getAbsolutePath()).toString() + "/solutions.txt";
+        try {
+            FileWriter fw = new FileWriter(writePath, true); // appends to solutions.txt
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+            pw.write(output);
+            pw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Slot solutions has been written to: " + writePath);
     }
 
     public static void writeResult(Map<Integer, AnnotationMirror> result) {
@@ -132,7 +153,9 @@ public class PrintUtils {
         StringBuilder statisticsTest = buildStatistic(statistic, modelRecord);
         String writePath = new File(new File("").getAbsolutePath()).toString() + "/statistic.txt";
         try {
-            PrintWriter pw = new PrintWriter(writePath);
+            FileWriter fw = new FileWriter(writePath, true); // appends to statistic.txt
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
             pw.write(statisticsTest.toString());
             pw.close();
         } catch (Exception e) {

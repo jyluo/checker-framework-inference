@@ -53,6 +53,9 @@ public class ConstraintManager {
      */
     private void add(Constraint constraint) {
         if (!ignoreConstraints) {
+            if (constraint == null) {
+                ErrorReporter.errorAbort("A null constraint is being added to the constraint set.");
+            }
             if (constraint instanceof AlwaysFalseConstraint) {
                 ErrorReporter.errorAbort(
                         "An AlwaysFalseConstraint is being added to the constraint set.");

@@ -5,8 +5,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.annotation.processing.ProcessingEnvironment;
-
+import checkers.inference.InferenceMain;
 import checkers.inference.InferenceResult;
+import org.checkerframework.framework.type.AnnotatedTypeFactory;
 import org.checkerframework.framework.type.QualifierHierarchy;
 import org.checkerframework.javacutil.ErrorReporter;
 
@@ -162,6 +163,8 @@ public class SolverEngine implements InferenceSolver {
     private Map<String, Integer> recordSlotConstraintSize(final Collection<Slot> slots,
             final Collection<Constraint> constraints) {
 
+        AnnotatedTypeFactory atf = InferenceMain.getInstance().getRealTypeFactory();
+
         // Record constraint size
         StatisticRecorder.record(StatisticKey.CONSTRAINT_SIZE, (long) constraints.size());
         // Record slot size
@@ -172,6 +175,10 @@ public class SolverEngine implements InferenceSolver {
         final String VARIABLE_SLOT_NAME = VariableSlot.class.getSimpleName();
         for (Slot slot : slots) {
             if (slot instanceof ConstantSlot) {
+
+                System.out.println("\n == encoded constant slot: " + atf.getAnnotationFormatter()
+                        .formatAnnotationMirror(((ConstantSlot) slot).getValue()));
+
                 if (!modelMap.containsKey(CONSTANT_SLOT_NAME)) {
                     modelMap.put(CONSTANT_SLOT_NAME, 1);
                 } else {
