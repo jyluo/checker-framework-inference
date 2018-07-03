@@ -1,9 +1,10 @@
 package checkers.inference;
 
+import checkers.inference.model.LubVariableSlot;
 import org.checkerframework.framework.qual.PolymorphicQualifier;
 import org.checkerframework.framework.type.QualifierHierarchy;
 import org.checkerframework.framework.util.MultiGraphQualifierHierarchy;
-import org.checkerframework.framework.util.PluginUtil;
+import org.checkerframework.javacutil.PluginUtil;
 import org.checkerframework.javacutil.AnnotationUtils;
 import org.checkerframework.javacutil.ErrorReporter;
 
@@ -193,8 +194,8 @@ public class InferenceQualifierHierarchy extends MultiGraphQualifierHierarchy {
         final AnnotationMirror lhsVarAnnot = findVarAnnot(lhsAnnos);
 
         if (InferenceMain.isHackMode((rhsVarAnnot == null || lhsAnnos == null))) {
-                InferenceMain.getInstance().logger.warning(
-                    "Hack:InferenceQualifierHierarchy:165:\n"
+                InferenceMain.getInstance().logger.info(
+                    "Hack:\n"
                   + "    rhs=" + PluginUtil.join(", ", rhsAnnos) + "\n"
                   + "    lhs=" + PluginUtil.join(", ", lhsAnnos ));
                 return true;
@@ -231,8 +232,8 @@ public class InferenceQualifierHierarchy extends MultiGraphQualifierHierarchy {
     @Override
     public AnnotationMirror leastUpperBound(final AnnotationMirror a1, final AnnotationMirror a2) {
         if (InferenceMain.isHackMode( (a1 == null || a2 == null))) {
-            InferenceMain.getInstance().logger.warning(
-                    "Hack:InferenceQualifierHierarchy:204\n"
+            InferenceMain.getInstance().logger.info(
+                    "Hack:\n"
                   + "a1=" + a1 + "\n"
                   + "a2=" + a2);
             return a1 != null ? a1 : a2;
@@ -286,8 +287,8 @@ public class InferenceQualifierHierarchy extends MultiGraphQualifierHierarchy {
                     // Vice versa.
                     return slotMgr.getAnnotation(var1);
                 } else {
-                    // Create a new merge variable for var1 and var2.
-                    final CombVariableSlot mergeVariableSlot = slotMgr.createCombVariableSlot(var1, var2);
+                    // Create a new LubVariable for var1 and var2.
+                    final LubVariableSlot mergeVariableSlot = slotMgr.createLubVariableSlot(var1, var2);
                     constraintMgr.addSubtypeConstraint(var1, mergeVariableSlot);
                     constraintMgr.addSubtypeConstraint(var2, mergeVariableSlot);
 

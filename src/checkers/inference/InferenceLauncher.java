@@ -1,10 +1,9 @@
 package checkers.inference;
 
 
-import org.checkerframework.framework.test.TestUtilities;
 import org.checkerframework.framework.util.CheckerMain;
 import org.checkerframework.framework.util.ExecUtil;
-import org.checkerframework.framework.util.PluginUtil;
+import org.checkerframework.javacutil.PluginUtil;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -132,6 +131,7 @@ public class InferenceLauncher {
 
         final CheckerMain checkerMain = new CheckerMain(InferenceOptions.checkerJar, options);
         checkerMain.addToRuntimeClasspath(getInferenceRuntimeJars());
+        checkerMain.addToClasspath(getInferenceRuntimeJars());
 
         if (InferenceOptions.printCommands) {
             outStream.println("Running typecheck command:");
@@ -231,7 +231,7 @@ public class InferenceLauncher {
         String insertAnnotationsScript = pathToAfuScripts+"insert-annotations-to-source";
         if (!InferenceOptions.inPlace) {
             final File outputDir = new File(InferenceOptions.afuOutputDir);
-            TestUtilities.ensureDirectoryExists(outputDir);
+            ensureDirectoryExists(outputDir);
 
             String jaifFile = getJaifFilePath (outputDir);
 
@@ -288,6 +288,14 @@ public class InferenceLauncher {
         outStream.flush();
         exitOnNonZeroStatus(result);
         return outputJavaFiles;
+    }
+
+    public static void ensureDirectoryExists(File path) {
+        if (!path.exists()) {
+            if (!path.mkdirs()) {
+                throw new RuntimeException("Could not make directory: " + path.getAbsolutePath());
+            }
+        }
     }
 
     /**

@@ -28,7 +28,10 @@ fi
 
 # Test CF Inference
 if [[ "${GROUP}" == "cfi-tests" || "${GROUP}" == "all" ]]; then
-    ant -f tests.xml run-tests
+    ./gradlew testCheckerInferenceScript
+    ./gradlew testCheckerInferenceDevScript
+
+    ./gradlew test
 fi
 
 # Downstream tests

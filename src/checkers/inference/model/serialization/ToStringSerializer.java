@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import org.checkerframework.framework.util.AnnotationFormatter;
-import org.checkerframework.framework.util.PluginUtil;
+import org.checkerframework.javacutil.PluginUtil;
 import checkers.inference.InferenceMain;
 import checkers.inference.model.ArithmeticConstraint;
 import checkers.inference.model.CombVariableSlot;
@@ -21,6 +21,7 @@ import checkers.inference.model.EqualityConstraint;
 import checkers.inference.model.ExistentialConstraint;
 import checkers.inference.model.ExistentialVariableSlot;
 import checkers.inference.model.InequalityConstraint;
+import checkers.inference.model.LubVariableSlot;
 import checkers.inference.model.PreferenceConstraint;
 import checkers.inference.model.RefinementVariableSlot;
 import checkers.inference.model.Serializer;
@@ -303,8 +304,22 @@ public class ToStringSerializer implements Serializer<String, String> {
         final StringBuilder sb = new StringBuilder();
         sb.append(slot.getId());
         if (showVerboseVars) {
-            sb.append(": merges ")
+            sb.append(": combines ")
               .append(Arrays.asList(slot.getFirst(), slot.getSecond()));
+            formatMerges(slot, sb);
+            optionallyFormatAstPath(slot, sb);
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public String serialize(LubVariableSlot slot) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(slot.getId());
+
+        if (showVerboseVars) {
+            sb.append(": lub-of ");
+            sb.append(Arrays.asList(slot.getLeft(), slot.getRight()));
             formatMerges(slot, sb);
             optionallyFormatAstPath(slot, sb);
         }
